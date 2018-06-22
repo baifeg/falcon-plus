@@ -15,7 +15,6 @@
 package db
 
 import (
-	"github.com/open-falcon/falcon-plus/common/model"
 	"log"
 )
 
@@ -66,14 +65,15 @@ func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
 		rows.Scan(&gid)
 		break
 	}
-	if gid == nil {
+	if &gid == nil {
 		url = "insert into grp(grp_name, create_user) value (?, ?)"
 		result, err2 := DB.Exec(url, group, "hbs")
 		if err2 != nil {
 			log.Println("ERROR:", err2)
 			return false, err2
 		}
-		gid, _ = result.LastInsertId()
+		lastId, _ := result.LastInsertId()
+		gid = int(lastId)
 	}
 
 	// 获取host的ID，必定存在
@@ -91,7 +91,7 @@ func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
 		break
 	}
 
-	if hid == nil {
+	if &hid == nil {
 		return false, nil
 	}
 
@@ -101,7 +101,7 @@ func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
 		log.Println("ERROR:", err)
 		return false, err
 	}
-	var aCount int64
+	var aCount int
 	for rows.Next() {
 		rows.Scan(&aCount)
 		break
@@ -113,10 +113,10 @@ func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
 	}
 
 	url = "insert into grp_host(grp_id, host_id) value (?, ?)"
-	result, err = DB.Exec(url, gid, hid)
-	if err != nil {
-		log.Println("ERROR:", err)
-		return false, err
+	_, err3 := DB.Exec(url, gid, hid)
+	if err3 != nil {
+		log.Println("ERROR:", err3)
+		return false, err3
 	}
 
 	return true, nil
