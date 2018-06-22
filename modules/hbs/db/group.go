@@ -56,12 +56,12 @@ func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
 		return false, err
 	}
 
-	hid, err2 := getHostId
+	hid, err2 := getHostId(host)
 	if err2 != nil || hid == 0 {
 		return false, err
 	}
 
-	url = "select count(*) as aCount from grp_host where grp_id=? and host_id=?"
+	url := "select count(*) as aCount from grp_host where grp_id=? and host_id=?"
 	rows3, err4 := DB.Query(url, gid, hid)
 	if err4 != nil {
 		log.Println("ERROR:", err4)
