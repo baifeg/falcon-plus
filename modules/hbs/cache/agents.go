@@ -48,13 +48,13 @@ func (this *SafeAgents) Put(req *model.AgentReportRequest) {
 		agentInfo.ReportRequest.PluginVersion != req.PluginVersion {
 
 		db.UpdateAgent(val)
-		// add by chenbolong at 2018-06-23
-		putHostIntoGroup(req.Hostname, req.Hostgroup)
-
 		this.Lock()
 		this.M[req.Hostname] = val
 		this.Unlock()
 	}
+
+	// add by chenbolong at 2018-06-23
+	putHostIntoGroup(req.Hostname, req.Hostgroup)
 
 }
 
