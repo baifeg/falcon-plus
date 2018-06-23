@@ -19,11 +19,11 @@ func CollectOthers() {
 	}
 
 	if g.GetEnv().ServiceType == "SPRING_BOOT_WEB" {
-		go collectSingle(20, funcs.SpringBootMetrics)
+		go collectOther(20, funcs.SpringMetrics, funcs.SpringHealthMetrics)
 	}
 }
 
-func collectSingle(sec int64, fn func() []*model.MetricValue) {
+func collectOther(sec int64, fn ...func() []*model.MetricValue) {
 	t := time.NewTicker(time.Second * time.Duration(sec))
 	defer t.Stop()
 	for {
@@ -36,17 +36,19 @@ func collectSingle(sec int64, fn func() []*model.MetricValue) {
 
 		mvs := []*model.MetricValue{}
 
-		items := fn()
-		if items == nil {
-			continue
-		}
+		for _, fn := range fns {
+			items := fn()
+			if items == nil {
+				continue
+			}
 
-		if len(items) == 0 {
-			continue
-		}
+			if len(items) == 0 {
+				continue
+			}
 
-		for _, mv := range items {
-			mvs = append(mvs, mv)
+			for _, mv := range items {
+				mvs = append(mvs, mv)
+			}
 		}
 
 		now := time.Now().Unix()
