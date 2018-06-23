@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -43,6 +44,7 @@ func InitEnv() {
 	if !ok {
 		serviceType = SERVICE_TYPE
 	}
+	port, _ := strconv.Atoi(servicePort)
 
 	e := SystemEnv{
 		Group:       group,
@@ -51,7 +53,7 @@ func InitEnv() {
 		App:         app,
 		Tenant:      tenant,
 		Service:     service,
-		ServicePort: int(servicePort),
+		ServicePort: port,
 	}
 
 	env = &e
