@@ -19,7 +19,7 @@ func CollectOthers() {
 	}
 
 	if g.GetEnv().ServiceType == "SPRING_BOOT_WEB" {
-		fns := []func(){funcs.SpringMetrics, funcs.SpringHealthMetrics}
+		fns := []func() []*model.MetricValue{funcs.SpringMetrics, funcs.SpringHealthMetrics}
 		go collect(30, fns)
 	}
 }
