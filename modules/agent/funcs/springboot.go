@@ -16,7 +16,7 @@ var (
 
 func SpringBootMetrics() (L []*model.MetricValue) {
 	env := g.GetEnv()
-	url := "http://127.0.0.1:" + env.ServicePort + "/actuator/metrics"
+	url := fmt.Sprintf("http://127.0.0.1:%d/actuator/metrics", env.ServicePort)
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatalln("get actuator metrics failed.", err)
