@@ -53,6 +53,9 @@ func main() {
 	g.InitRootDir()
 	g.InitLocalIp()
 	g.InitRpcClients()
+	
+	// add by chenbolong at 2018-06-22 
+	g.InitEnv()
 
 	funcs.BuildMappers()
 
