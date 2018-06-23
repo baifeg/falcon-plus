@@ -53,8 +53,8 @@ func main() {
 	g.InitRootDir()
 	g.InitLocalIp()
 	g.InitRpcClients()
-	
-	// add by chenbolong at 2018-06-22 
+
+	// add by chenbolong at 2018-06-22
 	g.InitEnv()
 
 	funcs.BuildMappers()
@@ -66,6 +66,9 @@ func main() {
 	cron.SyncBuiltinMetrics()
 	cron.SyncTrustableIps()
 	cron.Collect()
+
+	// add by chenbolong at 2018-06-23
+	cron.CollectOthers()
 
 	go http.Start()
 
