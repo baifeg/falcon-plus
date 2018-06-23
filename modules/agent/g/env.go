@@ -2,7 +2,6 @@ package g
 
 import (
 	"os"
-	"sync"
 	"log"
 	"encoding/json"
 )
@@ -20,12 +19,9 @@ type SystemEnv struct {
 
 var (
 	env		*SystemEnv
-	lock	= new(sync.RWMutex)
 )
 
 func GetEnv() *SystemEnv {
-	lock.Lock()
-	defer lock.Unlock()
 	return env
 }
 
@@ -45,9 +41,11 @@ func InitEnv() {
 		Service: service,
 	}
 	
-	lock.Lock()
-	defer lock.Unlock()
-	
 	env = &e
-	log.Println("read system env done: ", string(json.Marshal(e)))
+	j, err := json.Marshal(e)
+	if err != nil {
+		log.Println("read system env done: ", string(j))
+	} else {
+		log.Println("read system env failed.", err)
+	}
 }
