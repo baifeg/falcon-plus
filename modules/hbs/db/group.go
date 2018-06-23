@@ -16,6 +16,7 @@ package db
 
 import (
 	"log"
+	"github.com/open-falcon/falcon-plus/common/model"
 )
 
 func QueryHostGroups() (map[int][]int, error) {
@@ -45,4 +46,8 @@ func QueryHostGroups() (map[int][]int, error) {
 	}
 
 	return m, nil
+}
+
+func QueryHostGroup(group string) *model.Hostgroup {
+	
 }

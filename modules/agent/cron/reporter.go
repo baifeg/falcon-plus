@@ -40,6 +40,7 @@ func reportAgentStatus(interval time.Duration) {
 			IP:            g.IP(),
 			AgentVersion:  g.VERSION,
 			PluginVersion: g.GetCurrPluginVersion(),
+			Hostgroup:     g.GetEnv().Group,
 		}
 
 		var resp model.SimpleRpcResponse

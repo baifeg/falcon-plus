@@ -37,13 +37,39 @@ func actuatorInfo(url string, metricPrefix string, metrics []string) (L []*model
 	defer res.Body.Close()
 	var m map[string]interface{}
 	json.NewDecoder(res.Body).Decode(&m)
+	result := translate(m)
 
 	tags := fmt.Sprintf("group=%s,tenant=%s,app=%s,service=%s", env.Group, env.Tenant, env.App, env.Service)
 	for _, metric := range metrics {
-		if value, ok := m[metric]; ok {
+		if value, ok := result[metric]; ok {
 			name := fmt.Sprintf("%s%s", metricPrefix, metric)
 			L = append(L, GaugeValue(name, value, tags))
 		}
 	}
 	return
+}
+
+// 将嵌套的json转成key-value
+func translate(m map[string]interface{}) map[string]string {
+	result := make(map[string]string)
+	pop("", m, result)
+	return result
+}
+
+func pop(key string, value interface{}, m map[string]string) {
+	switch value.(type) {
+	case map[string]interface{}:
+		r, _ := value.(map[string]interface{})
+		for k, v := range r {
+			var prefix string
+			if len(key) == 0 {
+				prefix = k
+			} else {
+				prefix = key + "." + k
+			}
+			pop(prefix, v, m)
+		}
+	default:
+		m[key] = fmt.Sprint(value)
+	}
 }
