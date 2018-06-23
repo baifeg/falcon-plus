@@ -43,7 +43,7 @@ func InitEnv() {
 	
 	env = &e
 	j, err := json.Marshal(e)
-	if err != nil {
+	if err == nil {
 		log.Println("read system env done: ", string(j))
 	} else {
 		log.Println("read system env failed.", err)
