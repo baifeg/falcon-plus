@@ -48,10 +48,14 @@ func (this *SafeAgents) Put(req *model.AgentReportRequest) {
 		agentInfo.ReportRequest.PluginVersion != req.PluginVersion {
 
 		db.UpdateAgent(val)
+		// add by chenbolong at 2018-06-23
+		putHostIntoGroup(req.Hostname, req.Hostgroup)
+
 		this.Lock()
 		this.M[req.Hostname] = val
 		this.Unlock()
 	}
+
 }
 
 func (this *SafeAgents) Get(hostname string) (*model.AgentUpdateInfo, bool) {
@@ -103,4 +107,9 @@ func deleteStaleAgents() {
 			Agents.Delete(curr.ReportRequest.Hostname)
 		}
 	}
+}
+
+// 将host添加到goup中，如果已经添加则返回
+func putHostIntoGroup(host, group string) {
+	db.PutHostIntoGroupIfNecessary(host, group)
 }
