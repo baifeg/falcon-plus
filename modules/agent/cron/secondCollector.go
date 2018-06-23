@@ -23,7 +23,7 @@ func CollectOthers() {
 	}
 }
 
-func collectOther(sec int64, fn ...func() []*model.MetricValue) {
+func collectOther(sec int64, fns ...func() []*model.MetricValue) {
 	t := time.NewTicker(time.Second * time.Duration(sec))
 	defer t.Stop()
 	for {
