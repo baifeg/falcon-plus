@@ -24,13 +24,14 @@ func SpringBootMetrics() (L []*model.MetricValue) {
 	}
 
 	defer res.Body.Close()
-	var m map[string]string
+	var m map[string]interface{}
 	json.NewDecoder(res.Body).Decode(&m)
 
 	tags := fmt.Sprintf("group=%s,tenant=%s,app=%s,service=%s", env.Group, env.Tenant, env.App, env.Service)
 	for _, metric := range metrics {
 		if value, ok := m[metric]; ok {
-			L = append(L, GaugeValue(METRICS_PREFIX+metric, value, tags))
+			name := fmt.Sprintf("%s%s", METRICS_PREFIX, metric)
+			L = append(L, GaugeValue(name, value, tags))
 		}
 	}
 	return
