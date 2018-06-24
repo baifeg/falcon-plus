@@ -72,7 +72,7 @@ func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
 			log.Println("ERROR:", err2)
 			return false, err2
 		}
-		if result.RowsAffected() == 0 {
+		if affected, _ := result.RowsAffected(); affected == 0 {
 			log.Printf("ERROR: Add hostgroup[%s] failed\n", group)
 			return false, nil
 		}
