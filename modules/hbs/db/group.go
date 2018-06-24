@@ -65,7 +65,7 @@ func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
 		rows.Scan(&gid)
 		break
 	}
-	if &gid == nil {
+	if &gid == nil || gid <= 0 {
 		url = "insert into grp(grp_name, create_user) value (?, ?)"
 		result, err2 := DB.Exec(url, group, "hbs")
 		if err2 != nil {
@@ -106,6 +106,7 @@ func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
 		log.Println("ERROR:", err4)
 		return false, err4
 	}
+	defer rows3.Close()
 	var aCount int
 	for rows3.Next() {
 		rows3.Scan(&aCount)
