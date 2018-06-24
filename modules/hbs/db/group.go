@@ -72,22 +72,27 @@ func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
 			log.Println("ERROR:", err2)
 			return false, err2
 		}
+		if result.RowsAffected() == 0 {
+			log.Printf("ERROR: Add hostgroup[%s] failed\n", group)
+			return false, nil
+		}
 		lastId, _ := result.LastInsertId()
 		gid = int(lastId)
+		log.Printf("Info: Add new hostgroup [%s], id [%d]\n", group, gid)
 	}
 
 	// 获取host的ID，必定存在
 	url = "select id as hid from host where hostname=?"
-	rows, err = DB.Query(url, host)
-	if err != nil {
-		log.Println("ERROR:", err)
-		return false, err
+	rows2, err3 := DB.Query(url, host)
+	if err3 != nil {
+		log.Println("ERROR:", err3)
+		return false, err3
 	}
 
-	defer rows.Close()
+	defer rows2.Close()
 	var hid int
-	for rows.Next() {
-		rows.Scan(&hid)
+	for rows2.Next() {
+		rows2.Scan(&hid)
 		break
 	}
 
@@ -96,14 +101,14 @@ func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
 	}
 
 	url = "select count(*) as aCount from grp_host where grp_id=? and host_id=?"
-	rows, err = DB.Query(url, gid, hid)
-	if err != nil {
-		log.Println("ERROR:", err)
-		return false, err
+	rows3, err4 := DB.Query(url, gid, hid)
+	if err4 != nil {
+		log.Println("ERROR:", err4)
+		return false, err4
 	}
 	var aCount int
-	for rows.Next() {
-		rows.Scan(&aCount)
+	for rows3.Next() {
+		rows3.Scan(&aCount)
 		break
 	}
 
@@ -113,11 +118,12 @@ func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
 	}
 
 	url = "insert into grp_host(grp_id, host_id) value (?, ?)"
-	_, err3 := DB.Exec(url, gid, hid)
-	if err3 != nil {
-		log.Println("ERROR:", err3)
-		return false, err3
+	_, err5 := DB.Exec(url, gid, hid)
+	if err5 != nil {
+		log.Println("ERROR:", err5)
+		return false, err5
 	}
+	log.Printf("Info: Add host [%s] to group [%s]\n", host, group)
 
 	return true, nil
 }
