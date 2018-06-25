@@ -92,7 +92,7 @@ func Hostname() (string, error) {
 	}
 
 	// 如果环境变量中有IP，则用环境变量中的IP代替
-	envIp := g.GetEnv().Ip
+	envIp := GetEnv().Ip
 	if envIp != nil && len(envIp) > 0 {
 		return envIp
 	}
