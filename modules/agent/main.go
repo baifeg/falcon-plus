@@ -42,6 +42,9 @@ func main() {
 		os.Exit(0)
 	}
 
+	// add by chenbolong at 2018-06-22
+	g.InitEnv()
+
 	g.ParseConfig(*cfg)
 
 	if g.Config().Debug {
@@ -53,9 +56,6 @@ func main() {
 	g.InitRootDir()
 	g.InitLocalIp()
 	g.InitRpcClients()
-
-	// add by chenbolong at 2018-06-22
-	g.InitEnv()
 
 	funcs.BuildMappers()
 

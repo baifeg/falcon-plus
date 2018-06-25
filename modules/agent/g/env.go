@@ -39,7 +39,10 @@ func InitEnv() {
 	}
 	app := os.Getenv("APP_CODE")
 	tenant := os.Getenv("TENANT_CODE")
-	ip := os.Getenv("KETTY_IP")
+	ip, ipOk := os.LookupEnv("KETTY_IP")
+	if !ipOk {
+		ip = ""
+	}
 	serviceType, ok := os.LookupEnv("SERVICE_TYPE")
 	if !ok {
 		serviceType = SERVICE_TYPE

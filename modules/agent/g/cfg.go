@@ -91,6 +91,12 @@ func Hostname() (string, error) {
 		return hostname, nil
 	}
 
+	// 如果环境变量中有IP，则用环境变量中的IP代替
+	envIp := g.GetEnv().Ip
+	if envIp != nil && len(envIp) > 0 {
+		return envIp
+	}
+
 	hostname, err := os.Hostname()
 	if err != nil {
 		log.Println("ERROR: os.Hostname() fail", err)
