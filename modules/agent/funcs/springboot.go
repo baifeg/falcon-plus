@@ -12,8 +12,8 @@ import (
 var (
 	mainMetrics    = []string{"mem.free", "threads"}
 	healthMetrics  = []string{"status"}
-	METRICS_PREFIX = "spring.actuator.metrics."
-	HEALTH_PREFIX  = "spring.actuator.health."
+	METRICS_PREFIX = "spring.metrics."
+	HEALTH_PREFIX  = "spring.health."
 )
 
 func SpringMetrics() (L []*model.MetricValue) {
@@ -23,7 +23,13 @@ func SpringMetrics() (L []*model.MetricValue) {
 
 func SpringHealthMetrics() (L []*model.MetricValue) {
 	url := fmt.Sprintf("http://127.0.0.1:%d/actuator/health", g.GetEnv().ServicePort)
-	return actuatorInfo(url, HEALTH_PREFIX, healthMetrics)
+	items := actuatorInfo(url, HEALTH_PREFIX, healthMetrics)
+	for _, item := range *items {
+		if item.Value == "UP" {
+			item.Value = 1
+		}
+	}
+	return items
 }
 
 func actuatorInfo(url string, metricPrefix string, metrics []string) (L []*model.MetricValue) {
