@@ -25,8 +25,12 @@ func SpringHealthMetrics() (L []*model.MetricValue) {
 	url := fmt.Sprintf("http://127.0.0.1:%d/actuator/health", g.GetEnv().ServicePort)
 	items := actuatorInfo(url, HEALTH_PREFIX, healthMetrics)
 	for _, item := range items {
-		if item.Value == "UP" {
-			item.Value = 1
+		if item.Metric == "spring.health.status" {
+			if item.Value == "UP" {
+				item.Value = 1
+			} else {
+				item.Value = 0
+			}
 		}
 	}
 	return items
