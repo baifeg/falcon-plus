@@ -40,7 +40,7 @@ func actuatorInfo(url string, metricPrefix string, metrics []string) (L []*model
 	env := g.GetEnv()
 	res, err := http.Get(url)
 	if err != nil {
-		log.Fatalln("get actuator metrics failed.", err)
+		log.Println("get actuator metrics failed.", err)
 		return
 	}
 

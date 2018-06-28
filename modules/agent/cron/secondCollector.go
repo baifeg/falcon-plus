@@ -19,11 +19,12 @@ func CollectOthers() {
 	}
 
 	if g.GetEnv().ServiceType == "SPRING_BOOT_WEB" {
-		go collectOther(20, funcs.SpringMetrics, funcs.SpringHealthMetrics)
+		fns := []func(){funcs.SpringMetrics, funcs.SpringHealthMetrics}
+		go collect(30, fns)
 	}
 }
 
-func collectOther(sec int64, fns ...func() []*model.MetricValue) {
+func collectOther(sec int64, fns []func() []*model.MetricValue) {
 	t := time.NewTicker(time.Second * time.Duration(sec))
 	defer t.Stop()
 	for {
