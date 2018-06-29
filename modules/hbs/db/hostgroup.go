@@ -8,6 +8,10 @@ import (
 // 已存在返回false, nil
 // 异常返回false, err
 func PutHostIntoGroupIfNecessary(host, group string) (bool, error) {
+	if len(group) == 0 || len(host) == 0 {
+		return false, nil
+	}
+	
 	gid, err := getGroupId(group)
 	if err != nil || gid == 0 {
 		return false, err
